@@ -1,0 +1,24 @@
+accelerate
+anthropic
+datasets
+deepspeed
+dotenv
+ipykernel
+matplotlib
+numpy
+openai
+torch
+tqdm
+transformers
+trl
+wandb
+
+# for codebleu eval
+tree-sitter>=0.20.0
+tree-sitter-python>=0.20.0
+tree-sitter-java>=0.20.0
+tree-sitter-javascript>=0.20.0
+tree-sitter-typescript>=0.20.0
+tree-sitter-cpp>=0.20.0
+tree-sitter-c>=0.20.0
+tree-sitter-rust>=0.20.0
