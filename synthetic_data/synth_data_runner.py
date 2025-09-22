@@ -2,8 +2,8 @@ import sys
 
 sys.path.append("../utils/")
 sys.path.append("../eval/")
-from datautils import get_dataset
-from utils import get_model_and_tokenizer, print_with_separation
+from utils.datautils import get_dataset
+from utils.utils import get_model_and_tokenizer, print_with_separation
 from synthetic_data_creator import SyntheticDataCreator
 from tqdm import tqdm
 import os

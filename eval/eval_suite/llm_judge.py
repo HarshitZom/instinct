@@ -9,8 +9,8 @@ from evalutils import (
     multi_GPU_generate_model_output,
     extract_content_between_flags,
 )
-from utils import print_with_separation
-from datautils import get_unidiff
+from utils.utils import print_with_separation
+from utils.datautils import get_unidiff
 import torch
 import anthropic
 import asyncio

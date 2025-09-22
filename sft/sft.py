@@ -1,25 +1,26 @@
 import sys
 import os
-sys.path.append("../utils/")
-sys.path.append("../eval")
-from datautils import get_dataset, TRAIN_PROMPT_PREFACE
-from synthdatautils import get_synth_dataset
+# sys.path.append("../utils/")
+# sys.path.append("../eval")
+from transformers import AutoTokenizer
+from utils.datautils import get_dataset, TRAIN_PROMPT_PREFACE
+from utils.synthdatautils import get_synth_dataset
 from datasets import concatenate_datasets
 from datetime import datetime
 import wandb
 from trl import SFTTrainer, SFTConfig
-from utils import show_memory_stats, show_final_memory_stats, get_model_and_tokenizer, token_count, print_with_separation
-from selekt import Callback
+from utils.utils import show_memory_stats, show_final_memory_stats, get_model_and_tokenizer, token_count, print_with_separation
+from utils.selekt import Callback
 import torch
 import math
 import numpy as np
 from accelerate import Accelerator
-from eval_callback import EvalCallback
-from synthdata_callback import SynthDataEvalCallback
+from eval.eval_callback import EvalCallback
+from eval.synthdata_callback import SynthDataEvalCallback
 import os
 import gc
 import argparse
-from custom_collator import MaskingCollator
+from .custom_collator import MaskingCollator
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"]="expandable_segments:True"
 
@@ -47,29 +48,30 @@ CONFIG = {
     "rust_samples": 100,
 }
 
-run_name = f"{CONFIG["model_size"]}-{CONFIG["lr"]:.0e}-{CONFIG["selekt_alpha"]}-{CONFIG["decay"]}-{CONFIG["timestamp"]}"
+run_name = f"{CONFIG['model_size']}-{CONFIG['lr']:.0e}-{CONFIG['selekt_alpha']}-{CONFIG['decay']}-{CONFIG['timestamp']}"
 if args.use_synth_data:
     run_name = "synth-" + run_name
 
-run = wandb.init(
-    project="instinct-sft",
-    name=run_name,
-    config=CONFIG,
-)
-wandb.define_metric("*", step_metric="train/epoch")
+# run = wandb.init(
+#     project="instinct-sft",
+#     name=run_name,
+#     config=CONFIG,
+# )
+# wandb.define_metric("*", step_metric="train/epoch")
 
-model_name = f"Qwen/Qwen2.5-Coder-{CONFIG["model_size"]}"
-model, tokenizer = get_model_and_tokenizer(model_name, torch.bfloat16)
+model_name = f"Qwen/Qwen2.5-Coder-{CONFIG['model_size']}"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-base_model, _ = get_model_and_tokenizer(model_name, torch.bfloat16)
-base_model.cpu()
-base_state_dict = base_model.state_dict()
+
+# base_model, _ = get_model_and_tokenizer(model_name, torch.bfloat16)
+# base_model.cpu()
+# base_state_dict = base_model.state_dict()
 
 # Move base state dict to CPU and ensure proper cleanup
-for key in base_state_dict:
-    base_state_dict[key] = base_state_dict[key].cpu()
+# for key in base_state_dict:
+#     base_state_dict[key] = base_state_dict[key].cpu()
 
-del base_model
+# del base_model
 for _ in range(3):
     gc.collect()
 if torch.cuda.is_available():
@@ -119,9 +121,9 @@ print("TOTAL_TRAINING_STEPS:", total_training_steps)
 if accelerator.is_main_process:
     print_with_separation(train_dataset[0]["text"])
 
-save_dir = f"../ckpt/instinct-sft/qwen-{CONFIG["model_size"]}-{CONFIG["lr"]:.0e}-{CONFIG["selekt_alpha"]}-{CONFIG["decay"]}-{CONFIG["timestamp"]}"
+save_dir = f"../ckpt/instinct-sft/qwen-{CONFIG['model_size']}-{CONFIG['lr']:.0e}-{CONFIG['selekt_alpha']}-{CONFIG['decay']}-{CONFIG['timestamp']}"
 if args.use_synth_data:
-    save_dir = f"../ckpt/instinct-sft/synth-qwen-{CONFIG["model_size"]}-{CONFIG["lr"]:.0e}-{CONFIG["selekt_alpha"]}-{CONFIG["decay"]}-{CONFIG["timestamp"]}"
+    save_dir = f"../ckpt/instinct-sft/synth-qwen-{CONFIG['model_size']}-{CONFIG['lr']:.0e}-{CONFIG['selekt_alpha']}-{CONFIG['decay']}-{CONFIG['timestamp']}"
 
 run_name = f"{CONFIG['model_size']}-{CONFIG['timestamp']}"
 

@@ -2,7 +2,7 @@ from transformers import AutoTokenizer, DataCollatorForLanguageModeling
 import torch
 import sys
 sys.path.append("../utils")
-from utils import print_with_separation
+from utils.utils import print_with_separation
 
 class MaskingCollator(DataCollatorForLanguageModeling):
     def __init__(self, tokenizer, **kwargs):

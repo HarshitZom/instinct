@@ -11,7 +11,7 @@ from evalutils import (
 import sys
 
 sys.path.append("../utils")
-from utils import print_with_separation
+from utils.utils import print_with_separation
 import random
 from tqdm import tqdm
 

@@ -11,9 +11,9 @@ from evalutils import (
 import sys
 
 sys.path.append("../utils")
-from utils import print_with_separation
-from synthdatautils import get_synth_dataset
-from datautils import TRAIN_PROMPT_PREFACE
+from utils.utils import print_with_separation
+from utils.synthdatautils import get_synth_dataset
+from utils.datautils import TRAIN_PROMPT_PREFACE
 import random
 from tqdm import tqdm
 import random

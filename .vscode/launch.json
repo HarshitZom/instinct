@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "SFT Module",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "sft.sft"
+        },
+        {
+            "name": "Dataset parse Module",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "sft.data_parser_to_zeta_format"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        }
+    ]
+}
