@@ -3,7 +3,6 @@ import sys
 sys.path.append("../utils/")
 sys.path.append("../eval/")
 from utils.datautils import get_dataset
-from utils.utils import get_model_and_tokenizer, print_with_separation
 from synthetic_data_creator import SyntheticDataCreator
 from tqdm import tqdm
 import os
@@ -36,7 +35,8 @@ synthdata_creator = SyntheticDataCreator(
 )
 
 for dataset_type in ["train", "test"]:
-    dataset = get_dataset(DATASET_OPTS, version="v1.1", split=dataset_type)
+    # dataset = get_dataset(DATASET_OPTS, version="v1.1", split=dataset_type)
+    dataset = get_dataset((dataset_type=="train"))
     split_points = np.linspace(0, len(dataset), 9).astype(int)
     split_indices = np.arange(split_points[args.gpu], split_points[args.gpu + 1])
     for i in tqdm(split_indices, desc=f"Translating {dataset_type} dataset on GPU {args.gpu}..."):
@@ -51,34 +51,34 @@ for dataset_type in ["train", "test"]:
         text = f"{prompt}\n### Response:\n{response}"
         try:
             prompts = synthdata_creator.translate_example(
-                text, excerpt_languages=["Python", "C", "Rust", "Java"]
+                prompt=text, excerpt_languages=["Go"]
             )
         except ValueError as e:
             print(f"Error translating item {i}: {e}")
             continue
 
         os.makedirs(
-            os.path.dirname(f"./v11_{dataset_type}_set/python/{i:04d}.txt"),
+            os.path.dirname(f"./v11_{dataset_type}_set/go/{i:04d}.txt"),
             exist_ok=True,
         )
-        with open(f"./v11_{dataset_type}_set/python/{i:04d}.txt", "w") as f:
+        with open(f"./v11_{dataset_type}_set/go/{i:04d}.txt", "w") as f:
             f.write(prompts[0])
 
-        os.makedirs(
-            os.path.dirname(f"./v11_{dataset_type}_set/c/{i:04d}.txt"), exist_ok=True
-        )
-        with open(f"./v11_{dataset_type}_set/c/{i:04d}.txt", "w") as f:
-            f.write(prompts[1])
+        # os.makedirs(
+        #     os.path.dirname(f"./v11_{dataset_type}_set/c/{i:04d}.txt"), exist_ok=True
+        # )
+        # with open(f"./v11_{dataset_type}_set/c/{i:04d}.txt", "w") as f:
+        #     f.write(prompts[1])
 
-        os.makedirs(
-            os.path.dirname(f"./v11_{dataset_type}_set/rust/{i:04d}.txt"), exist_ok=True
-        )
-        with open(f"./v11_{dataset_type}_set/rust/{i:04d}.txt", "w") as f:
-            f.write(prompts[2])
+        # os.makedirs(
+        #     os.path.dirname(f"./v11_{dataset_type}_set/rust/{i:04d}.txt"), exist_ok=True
+        # )
+        # with open(f"./v11_{dataset_type}_set/rust/{i:04d}.txt", "w") as f:
+        #     f.write(prompts[2])
 
-        os.makedirs(
-            os.path.dirname(f"./v11_{dataset_type}_set/java/{i:04d}.txt"),
-            exist_ok=True,
-        )
-        with open(f"./v11_{dataset_type}_set/java/{i:04d}.txt", "w") as f:
-            f.write(prompts[3])
+        # os.makedirs(
+        #     os.path.dirname(f"./v11_{dataset_type}_set/java/{i:04d}.txt"),
+        #     exist_ok=True,
+        # )
+        # with open(f"./v11_{dataset_type}_set/java/{i:04d}.txt", "w") as f:
+        #     f.write(prompts[3])

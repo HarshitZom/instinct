@@ -2,10 +2,10 @@ import sys
 
 sys.path.append("../utils/")
 sys.path.append("../eval/")
-import datautils
+import utils.datautils
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from utils import get_model_and_tokenizer, print_with_separation
-from evalutils import (
+from utils.utils import get_model_and_tokenizer, print_with_separation
+from eval.evalutils import (
     get_excerpt,
     extract_content_between_flags,
     separate_input_output,
@@ -61,6 +61,7 @@ class SyntheticDataCreator:
             "java",
             "lua",
             "ps1",
+            "go",
         ]
 
     def translate_example(self, prompt: str, excerpt_languages: list[str]) -> str:
